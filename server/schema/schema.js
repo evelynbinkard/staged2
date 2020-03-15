@@ -76,6 +76,18 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args){
                 return _.find(looks, { id: args.id })
             }
+        },
+        looks: {
+            type: new GraphQLList(LookType),
+            resolve(parent, args) {
+                return looks;
+            }
+        },
+        models: {
+            type: new GraphQLList(ModelType),
+            resolve(parent, args) {
+                return models;
+            }
         }
 
     }
