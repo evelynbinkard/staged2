@@ -9,7 +9,9 @@ const { GraphQLObjectType,
     GraphQLSchema,
     GraphQLID,
     GraphQLInt,
-    GraphQLList } = graphql;
+    GraphQLList,
+    GraphQLNonNull
+} = graphql;
 
 const RunwayModelType = new GraphQLObjectType({
     name: 'RunwayModel',
@@ -83,9 +85,9 @@ const Mutation = new GraphQLObjectType({
         addRunwayModel: {
             type: RunwayModelType,
             args: {
-                firstName: { type: GraphQLString },
-                lastName: { type: GraphQLString },
-                email: { type: GraphQLString },
+                firstName: { type: new GraphQLNonNull(GraphQLString) },
+                lastName: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type: new GraphQLNonNull(GraphQLString) },
                 checkedIn: { type: GraphQLBoolean }
             },
             resolve(parent, args) {
@@ -101,8 +103,8 @@ const Mutation = new GraphQLObjectType({
         addLook: {
             type: LookType,
             args: {
-                designerCollection: { type: GraphQLString },
-                description: { type: GraphQLString },
+                designerCollection: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLString) },
                 orderInShow: { type: GraphQLInt },
                 assignedRunwayModelId: { type: GraphQLID }
             },
