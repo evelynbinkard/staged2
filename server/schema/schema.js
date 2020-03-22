@@ -1,5 +1,7 @@
 const graphql = require('graphql');
 const _ = require('lodash');
+const Look = require('../models/Look');
+const RunwayModel = require('../models/Model');
 
 const { GraphQLObjectType, 
     GraphQLString,
@@ -9,26 +11,8 @@ const { GraphQLObjectType,
     GraphQLInt,
     GraphQLList } = graphql;
 
-// dummy data
-const models = [
-    { id: '1', firstName: 'Evelyn', lastName: 'Binkard', email: 'abcd@gmail.com', checkedIn: false },
-    { id: '2', firstName: 'Eve', lastName: 'Bin', email: 'efgh@gmail.com', checkedIn: false },
-    { id: '3', firstName: 'Lyn', lastName: 'Kard', email: 'wxyz@gmail.com', checkedIn: false },
-];
-
-const looks = [
-    { id: '1', collection: 'cocktail', orderInShow: 1, assignedModelId: '3' },
-    { id: '2', collection: 'bridal', orderInShow: 1, assignedModelId: '2' },
-    { id: '3', collection: 'casual', orderInShow: 1, assignedModelId: '1' },
-    { id: '4', collection: 'swim', orderInShow: 2, assignedModelId: '1' },
-    { id: '5', collection: 'cocktail', orderInShow: 2, assignedModelId: '2' },
-    { id: '6', collection: 'bridal', orderInShow: 2, assignedModelId: '1' },
-    { id: '7', collection: 'casual', orderInShow: 2, assignedModelId: '3' }
-
-]
-
-const ModelType = new GraphQLObjectType({
-    name: 'Model',
+const RunwayModelType = new GraphQLObjectType({
+    name: 'RunwayModel',
     fields: () => ({
         id: { type: GraphQLID },
         firstName: { type: GraphQLString },
@@ -38,7 +22,7 @@ const ModelType = new GraphQLObjectType({
         looks: {
             type: new GraphQLList(LookType),
             resolve(parent, args)  {
-                return _.filter(looks, { assignedModelId: parent.id})
+                return Look.find({assignedRunwayModelId: parent.id });
             }
         }
     })
@@ -48,13 +32,13 @@ const LookType = new GraphQLObjectType({
     name: 'Look',
     fields: () => ({
         id: { type: GraphQLID },
-        collection: { type: GraphQLString },
+        designerCollection: { type: GraphQLString },
+        description: { type: GraphQLString },
         orderInShow: { type: GraphQLInt },
-        assignedModel: {
-            type: ModelType, 
+        assignedRunwayModel: {
+            type: RunwayModelType, 
             resolve(parent, args) {
-                console.log(parent)
-                return _.find(models, {id: parent.assignedModelId });
+                return RunwayModel.findById(parent.assignedRunwayModelId);
             }
         }
     })
@@ -63,37 +47,79 @@ const LookType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
-        model: { 
-            type: ModelType,
+        runwayModel: { 
+            type: RunwayModelType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args){
-                return _.find(models, { id: args.id });
+                return RunwayModel.findById(args.id);
             }
         },
         look: {
             type: LookType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args){
-                return _.find(looks, { id: args.id })
+                return Look.findById(args.id);
             }
         },
         looks: {
             type: new GraphQLList(LookType),
             resolve(parent, args) {
-                return looks;
+                return Look.find({});
             }
         },
-        models: {
-            type: new GraphQLList(ModelType),
+        runwayModels: {
+            type: new GraphQLList(RunwayModelType),
             resolve(parent, args) {
-                return models;
+                return RunwayModel.find({});
             }
         }
 
     }
 });
 
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addRunwayModel: {
+            type: RunwayModelType,
+            args: {
+                firstName: { type: GraphQLString },
+                lastName: { type: GraphQLString },
+                email: { type: GraphQLString },
+                checkedIn: { type: GraphQLBoolean }
+            },
+            resolve(parent, args) {
+                let runwayModel = new RunwayModel({
+                    firstName: args.firstName,
+                    lastName: args.lastName,
+                    email: args.email,
+                    checkedIn: false
+                });
+                return runwayModel.save();
+            }
+        },
+        addLook: {
+            type: LookType,
+            args: {
+                designerCollection: { type: GraphQLString },
+                description: { type: GraphQLString },
+                orderInShow: { type: GraphQLInt },
+                assignedRunwayModelId: { type: GraphQLID }
+            },
+            resolve(parent, args) {
+                let look = new Look({
+                    designerCollection: args.designerCollection,
+                    description: args.description,
+                    orderInShow: args.orderInShow,
+                    assignedRunwayModelId: args.assignedRunwayModelId
+                });
+                return look.save();
+            }
+        }
+    }
+})
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation,
 })
