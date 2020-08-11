@@ -4,6 +4,7 @@ import { ApolloProvider } from 'react-apollo';
 
 //components
 import LookList from './components/LookList';
+import AddLook from './components/AddLook';
 
 //apollo client setup
 const client = new ApolloClient({
@@ -17,6 +18,7 @@ class App extends Component {
         <div id="main">
           <h1>Models' Looks</h1>
           <LookList />
+          <AddLook />
         </div>
       </ApolloProvider>
     );
