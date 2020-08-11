@@ -1,16 +1,6 @@
 import React, {Component} from 'react';
-import { gql } from 'apollo-boost';
 import { graphql } from 'react-apollo';
-
-const getRunwayModelsQuery = gql`
-    {
-        runwayModels{
-            firstName
-            lastName
-            id
-        }
-    }
-`
+import { getRunwayModelsQuery } from '../queries/queries';
 
 class AddLook extends Component {
   displayRunwayModels(){
@@ -50,7 +40,7 @@ class AddLook extends Component {
                     {this.displayRunwayModels()}
                 </select>
             </div>
-            
+
         </form>
         
         <button>+</button>

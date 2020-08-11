@@ -1,15 +1,6 @@
 import React, {Component} from 'react';
-import { gql } from 'apollo-boost';
 import { graphql } from 'react-apollo';
-
-const getLooksQuery = gql`
-    {
-        looks{
-            description
-            id
-        }
-    }
-`
+import { getLooksQuery } from '../queries/queries';
 
 class LookList extends Component {
   displayLooks(){
