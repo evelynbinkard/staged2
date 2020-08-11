@@ -4,8 +4,9 @@ import { graphql } from 'react-apollo';
 
 const getRunwayModelsQuery = gql`
     {
-        models{
-            name
+        runwayModels{
+            firstName
+            lastName
             id
         }
     }
@@ -14,12 +15,13 @@ const getRunwayModelsQuery = gql`
 class AddLook extends Component {
   displayRunwayModels(){
       var data = this.props.data;
+
       if (data.loading) {
-          return (<div>loading models</div>);
+          return (<option disabled>loading models</option>);
       } else {
-        return data.models.map(model => {
+        return data.runwayModels.map(model => {
             return (
-                <option key={model.id} value={model.id }>{ model.firstName }{model.lastName}</option>
+                <option key={model.id} value={model.id }>{ model.firstName } {model.lastName}</option>
             )
         })
       }
@@ -28,10 +30,7 @@ class AddLook extends Component {
     return (
       <>
         <form id="add-look-form">
-            <div className="field">
-                <label>Look Description</label>
-                <input type="text"></input>
-            </div>
+           
             <div className="field">
                 <label>Look Description</label>
                 <input type="text"></input>
@@ -47,10 +46,11 @@ class AddLook extends Component {
             <div className="field">
                 <label>Assign Model</label>
                 <select>
-                    <option disabled>Select Model</option>
-                    {displayRunwayModels()}
+                    <option>Select Model</option>
+                    {this.displayRunwayModels()}
                 </select>
             </div>
+            
         </form>
         
         <button>+</button>
