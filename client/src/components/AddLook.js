@@ -52,6 +52,8 @@ class AddLook extends Component {
                 </select>
             </div>
         </form>
+        
+        <button>+</button>
       </>
     );
   }
