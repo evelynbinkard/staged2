@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { graphql } from 'react-apollo';
-import { getRunwayModelsQuery } from '../queries/queries';
+import * as compose from 'lodash.flowright';
+import { getRunwayModelsQuery, addLookMutation } from '../queries/queries';
 
 class AddLook extends Component {
 
@@ -15,7 +16,7 @@ class AddLook extends Component {
     }
 
     displayRunwayModels(){
-      var data = this.props.data;
+      var data = this.props.getRunwayModelsQuery;
 
       if (data.loading) {
           return (<option disabled>loading models</option>);
@@ -30,7 +31,14 @@ class AddLook extends Component {
 
     submitForm(e) {
         e.preventDefault();
-        console.log(this.state);
+        this.props.addLookMutation({
+            variables: {
+                description: this.state.lookDescription,
+                designerCollection: this.state.collection,
+                orderInShow: Number(this.state.orderInShow),
+                assignedRunwayModelId: this.state.assignedRunwayModelId
+            }
+        });
     }
 
     render(){
@@ -66,4 +74,7 @@ class AddLook extends Component {
   }
 }
 
-export default graphql(getRunwayModelsQuery)(AddLook);
+export default compose(
+    graphql(getRunwayModelsQuery, { name: "getRunwayModelsQuery" }),
+    graphql(addLookMutation, { name: "addLookMutation" })
+)(AddLook);
