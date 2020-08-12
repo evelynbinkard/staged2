@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { graphql } from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { getRunwayModelsQuery, addLookMutation } from '../queries/queries';
+import { getRunwayModelsQuery, addLookMutation, getLooksQuery } from '../queries/queries';
 
 class AddLook extends Component {
 
@@ -37,7 +37,8 @@ class AddLook extends Component {
                 designerCollection: this.state.collection,
                 orderInShow: Number(this.state.orderInShow),
                 assignedRunwayModelId: this.state.assignedRunwayModelId
-            }
+            },
+            refetchQueries: [ {query: getLooksQuery} ]
         });
     }
 
