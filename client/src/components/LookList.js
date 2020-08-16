@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import { graphql } from 'react-apollo';
 import { getLooksQuery } from '../queries/queries';
 
+//components
+import LookDetails from './LookDetails';
+
 class LookList extends Component {
   displayLooks(){
       var data = this.props.data;
@@ -21,6 +24,7 @@ class LookList extends Component {
         <ul id="look-list">
             { this.displayLooks() }
         </ul>
+        <LookDetails />
       </>
     );
   }

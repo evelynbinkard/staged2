@@ -27,4 +27,24 @@ const addLookMutation = gql`
         }
     }`
 
-export { getLooksQuery, getRunwayModelsQuery, addLookMutation };
+const getLookQuery = gql`
+    query($id: ID) {
+        look(id: $id) {
+            id
+            description
+            designerCollection
+            assignedRunwayModel {
+                firstName
+                lastName
+                looks {
+                    description
+                    designerCollection
+                    id
+                }
+            }
+        }
+    }
+`
+
+
+export { getLooksQuery, getRunwayModelsQuery, addLookMutation, getLookQuery };
